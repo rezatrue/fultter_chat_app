@@ -9,26 +9,46 @@ class ChatScreen extends StatelessWidget {
   const ChatScreen({Key? key, required this.title}) : super(key: key);
   final String title;
 
+//   @override
+//   State<ChatScreen> createState() => _ChatScreenState();
+// }
+
+// class _ChatScreenState extends State<ChatScreen> {
+  // Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+  //     .collection('/chats/hANmqo7sg1c7q36ElxDj/messages')
+  //     .snapshots();
+
   @override
   Widget build(BuildContext context) {
-    Firebase.initializeApp();
     return Scaffold(
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: ((context, index) {
-          return const Text('Hello');
-        }),
-      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('/chats/hANmqo7sg1c7q36ElxDj/messages')
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text('Something went wrong');
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            var docs = snapshot.data!.docs;
+            return ListView.builder(
+              itemCount: docs.length,
+              itemBuilder: ((context, index) {
+                return Text(docs[index]['text']);
+              }),
+            );
+          }),
       floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
         onPressed: () {
           FirebaseFirestore.instance
               .collection('/chats/hANmqo7sg1c7q36ElxDj/messages')
-              .snapshots()
-              .listen((event) {
-            event.docs.forEach((element) {
-              print(element['text']);
-            });
-          });
+              .add({'text': ' + Button is clicked '});
         },
       ),
     );

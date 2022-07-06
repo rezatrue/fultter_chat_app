@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/screens/auth_screen.dart';
 import 'package:flutter_chat_app/screens/chat_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 //import 'firebase_options.dart';
@@ -23,9 +24,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.pink,
+        backgroundColor: Colors.pink,
+        accentColor: Colors.purple,
+        accentColorBrightness: Brightness.dark,
+        buttonTheme: ButtonTheme.of(context).copyWith(
+          buttonColor: Colors.pink,
+          textTheme: ButtonTextTheme.primary,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
       ),
-      home: const ChatScreen(title: 'Flutter Chat Room'),
+      // home: const ChatScreen(title: 'Flutter Chat Room'),
+      home: AuthScreen(),
     );
   }
 }

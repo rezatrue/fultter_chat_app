@@ -4,10 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_chat_app/widgets/chat/messages.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const ChatScreen({
+    Key? key,
+  }) : super(key: key);
 
 //   @override
 //   State<ChatScreen> createState() => _ChatScreenState();
@@ -21,28 +24,46 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('/chats/hANmqo7sg1c7q36ElxDj/messages')
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Text('Something went wrong');
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            var docs = snapshot.data!.docs;
-            return ListView.builder(
-              itemCount: docs.length,
-              itemBuilder: ((context, index) {
-                return Text(docs[index]['text']);
+      appBar: AppBar(
+        title: Text('My Chat Room'),
+        actions: [
+          DropdownButton(
+              icon: Icon(
+                Icons.more_vert,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              items: [
+                DropdownMenuItem(
+                  child: Container(
+                    child: Row(
+                      children: [
+                        Icon(Icons.exit_to_app),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text('Logout'),
+                      ],
+                    ),
+                  ),
+                  value: 'logout',
+                ),
+              ],
+              onChanged: (itemIdentifier) {
+                if (itemIdentifier == 'logout') {
+                  FirebaseAuth.instance.signOut();
+                }
               }),
-            );
-          }),
+        ],
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Expanded(
+              child: Messages(),
+            ),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {

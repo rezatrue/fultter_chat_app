@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -17,8 +18,13 @@ class _NewMessagesState extends State<NewMessages> {
 
   void _sendMessage() {
     FocusScope.of(context).unfocus();
+    final user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance.collection('chat').add(
-      {'text': _enteredMassage, 'timeStamp': Timestamp.now()},
+      {
+        'text': _enteredMassage,
+        'timeStamp': Timestamp.now(),
+        'userId': user?.uid,
+      },
     );
     _controller.clear();
   }

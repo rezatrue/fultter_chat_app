@@ -51,6 +51,9 @@ class _AuthScreenState extends State<AuthScreen> {
         content: Text(errMessage),
         backgroundColor: Theme.of(ctx).errorColor,
       ));
+      setState(() {
+        _isLoading = false;
+      });
     } catch (err) {
       print(err);
 
@@ -58,13 +61,18 @@ class _AuthScreenState extends State<AuthScreen> {
         content: Text(err.toString()),
         backgroundColor: Theme.of(ctx).errorColor,
       ));
-    } finally {
       setState(() {
         _isLoading = false;
       });
     }
+    // finally {
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    //}
   }
 
+  void imagePickerFn() {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
